@@ -10,3 +10,8 @@ node_modules
 # temporary
 *.tmp
 *~
+# dist
+dist
+
+#public/dist
+public/dist
