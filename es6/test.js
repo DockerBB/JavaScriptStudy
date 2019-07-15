@@ -1,7 +1,7 @@
-'use strict'
+//'use strict'
 const sentences = [
     { subject: 'JavaScript', verb: 'is', object: 'great' },
-    { subject: 'Elephants', verb: 'are', object: 'large' }
+    { subject: 'Elephants', verb: 'are', object: 'large' },
 ]
 
 // es6特性对象解构
@@ -13,3 +13,4 @@ function say ({ subject, verb, object }) {
 for (const s of sentences) {
     say(s)
 }
+
