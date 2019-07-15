@@ -1,4 +1,3 @@
-//'use strict'
 const sentences = [
     { subject: 'JavaScript', verb: 'is', object: 'great' },
     { subject: 'Elephants', verb: 'are', object: 'large' },
@@ -13,4 +12,17 @@ function say ({ subject, verb, object }) {
 for (const s of sentences) {
     say(s)
 }
-
+const o = {
+    name: 'Julie',
+    greeBackwards: function () {
+        getReverseName = () => {
+            let nameBackwords = ''
+                for(let i = this.name.length-1; i>=0;i--){
+                    nameBackwords += this.name[i]
+                }
+                return nameBackwords
+        }
+        console.log(`${ getReverseName() } si eman ym , olleH`)
+    }
+}
+    o.greeBackwards()
