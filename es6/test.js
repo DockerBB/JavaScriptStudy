@@ -167,3 +167,14 @@ const alphabetical = words.reduce((a,x) => {
 const longWords = words.reduce((a,w) => w.length > 6?a+=" "+w:a,"").trim();
 console.log(alphabetical);
 console.log(longWords);
+
+//for...in
+/*for...in是枚举对象属性的传统方式 (不会出现键为符号的属性)*/
+const SYM = Symbol();//符号类型
+const o1 = {
+    a:1,b:2,c:3,[SYM]: 4
+};
+for(let item in o1){
+    if(!o1.hasOwnProperty(item))continue;
+    console.log(`${item}: ${o1[item]}`);
+};
