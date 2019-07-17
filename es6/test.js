@@ -98,3 +98,72 @@ function f2() {
 var f3 = function (){
     console.log('f');
 };*/
+//数组概览
+const arr1 = [1,2,3];
+const arr2 = ["one",2,"three"];
+const arr3 = [arr1,arr2];
+const arr4 = [
+    { name: "Fred", type: "object", luckyNumber: [5,7,13]},
+    [
+        { name: "Susan", type: "object"},
+        { name: "Anthony", type: "object"}
+    ],
+    1,
+    function () {
+        return "arrays can contain function too";
+    },
+    "three"
+];
+console.log(arr1.concat([[5,6],4]));
+const ar = [1,2,3,4,5,6,7];/*slice允许对当前字符串做修改，可以从任意以个下标增加和/或删除元素
+这个方法的第一个参数是起始修改位置的数组下标；第二个参数是需要删除的元素个数（如果不想删除任何元素就传如0）
+其他参数则是需要添加到数组中的元素*/
+console.log(ar.splice(1,0,2,3,4),ar);
+console.log(ar.splice(5,0,6),ar);
+console.log(ar.splice(1,2),ar);
+console.log(ar.splice(2,1,'a','b'),ar);
+/*copyWithin函数将数组中一串有序的元素复制到数组的另一个位置，复制的同属回覆盖原来数组中的内容。
+* 第一个参数表明目标位置，第二个参数表示从哪里开始复制，第三个参数表示复制到哪里结束
+* 如arr.copuWithin(0,-3,-1)表示将下标为1，2的元素复制到下标为0，1的位置（-1的前一个位置为最后一个值）*/
+const arr = [1,2,3,4];
+console.log(arr.copyWithin(1,3));
+console.log(arr.copyWithin(2,0,2));
+console.log(arr.copyWithin(0,-3,-1));
+
+/*fill可以将一个固定值赋给数组中的任意位置可以指定一个起始位置和结束位置*/
+console.log(arr.fill("a"));
+console.log(arr.fill("b",1));
+console.log(arr.fill("c",2,3));
+console.log(arr.fill(0,-3,-1));
+
+/*reverse颠倒数组的顺序 sort对当前数组排序*/
+const arr5 = [1,2,3,4,5];
+console.log(arr5.reverse());
+console.log(arr5.sort());
+/*sort允许指定一个排序函数*/
+const arr6 = [{name: "Suzanne"},{name: "Jim"},{name: "Trevor"},{name: "Amanda"}];
+console.log(arr6.sort());
+console.log(arr6.sort((a,b) => a.name > b.name));//升序
+console.log(arr6.sort((a,b) => a.name[1]<b.name[1]));//降序
+
+const arr7 = [1,5,"a",true,5,[1,2],"9"];
+console.log(arr7.lastIndexOf(5,6));
+
+//返回指定下标开始的方平数 find返回元素值 findIndex返回下标
+const arr8 = [1,17,16,4,2,16,10,3,49];
+console.log(arr8.find((x,i) => i>1 &&Number.isInteger(Math.sqrt(x))));
+
+console.log('\u2665,\u2663,\u2666,\u2660');
+
+//reduce 第一个参数表示累加值 第二个参数表示数组元素值，可以指定累加初始值（可选）
+const words = ["Beachball","Rodeo","Angel","Aardvark",
+"Xylophone","November","Chocolate","Papaya","Uniform",
+"Joker","Colver","Bali"];
+const alphabetical = words.reduce((a,x) => {
+    if(!a[x[0]]) a[x[0]] = [];
+    a[x[0]].push(x);
+    return a;
+},{});
+const longWords = words.reduce((a,w) => w.length > 6?a+=" "+w:a,"").trim();
+console.log(alphabetical);
+console.log(longWords);
