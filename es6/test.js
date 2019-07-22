@@ -169,7 +169,7 @@ console.log(alphabetical);
 console.log(longWords);
 
 //for...in
-/*for...in是枚举对象属性的传统方式 (不会出现键为符号的属性)*/
+// /*for...in是枚举对象属性的传统方式 (不会出现键为符号的属性)*/
 const SYM = Symbol();//符号类型
 const o1 = {
     a:1,b:2,c:3,[SYM]: 4
@@ -178,3 +178,10 @@ for(let item in o1){
     if(!o1.hasOwnProperty(item))continue;
     console.log(`${item}: ${o1[item]}`);
 };
+//Object.keys
+Object.keys(o1).forEach(prop => console.log(`${prop}: ${o1[prop]}`));
+console.log('\n');
+Object.keys(o1)
+    .filter(prop => prop.match(/^a/))
+    .forEach(prop => console.log(`${prop}: ${o1[prop]}`));
+
