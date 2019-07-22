@@ -16,4 +16,5 @@ dist
 #public/dist
 public/dist
 
+#.idea
 .idea/workspace.xml
