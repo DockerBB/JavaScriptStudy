@@ -177,11 +177,77 @@ const o1 = {
 for(let item in o1){
     if(!o1.hasOwnProperty(item))continue;
     console.log(`${item}: ${o1[item]}`);
-};
+}
 //Object.keys
 Object.keys(o1).forEach(prop => console.log(`${prop}: ${o1[prop]}`));
 console.log('\n');
 Object.keys(o1)
     .filter(prop => prop.match(/^a/))
     .forEach(prop => console.log(`${prop}: ${o1[prop]}`));
+
+//面向对象编程
+// class Car {
+//     constructor(){
+//
+//     }
+// }
+// const car1 = new Car();
+// const car2 = new Car();
+// console.log(car1 instanceof Car);
+// class Car {
+//     constructor(make,model){
+//         this.make = make;
+//         this.model = model;
+//         this.userGears = ['P','N','R','D'];
+//         this.userGear = this.userGears[0];
+//     }
+//     shift(gear){
+//         if(this.userGears.indexOf(gear)<0)
+//             throw new Error(`Invalid gear: ${gear}`);
+//         this.userGear = gear;
+//     }
+// }
+// const car1 = new Car("Tesla","Model S");
+// car1.shift('D');
+// console.log(car1.make,car1.model,car1.userGear);
+//动态属性
+// class Car {
+//     constructor(make,model){
+//         this.make = make;
+//         this.model = model;
+//         this._userGears = ['P','N','R','D'];//穷人访问限制 给私有属性加下划线前缀
+//         this._userGear = this._userGears[0];
+//     }
+//
+//     get userGear(){ return this._userGear; }
+//     set userGear(value){
+//         if(this._userGears.indexOf(value)<0)
+//             throw new Error(`Invalid gear: ${value}`);
+//         this._userGear = value;
+//     }
+//     shift(gear){this.userGear = gear;}
+// }/*并没有解决直接赋值问题*/
+//WeakMap强制属性私有化
+const Car = (function () {
+    const carProps = new WeakMap();
+
+    class Car {
+        constructor(make,model){
+            this.make = make;
+            this.model = model;
+            this._userGears = ['P','N','R','D'];
+            carProps.set(this,{ userGear: this._userGears[0]});
+        }
+
+        get userGear(){ return carProps.get(this).userGear; }
+        set userGear(value){
+            if(this._userGears.indexOf(value)<0)
+                throw new Error(`Invalid gear:${value}`);
+            carProps.get(this).userGear = value;
+        }
+
+        shift(gear) { this.userGear = gear; }
+    }
+    return Car;
+})();/*这里使用即时调用函数将WeakMap隐藏再一个闭包内，从而阻止了外界的访问。这个WeakMap可以安全的存储任何不像被Car类外部访问的属性*/
 
