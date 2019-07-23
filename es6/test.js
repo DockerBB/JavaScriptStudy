@@ -251,3 +251,19 @@ const Car = (function () {
     return Car;
 })();/*这里使用即时调用函数将WeakMap隐藏再一个闭包内，从而阻止了外界的访问。这个WeakMap可以安全的存储任何不像被Car类外部访问的属性*/
 
+//原型
+const car1 = new Car();
+const car2 = new Car();
+console.log(car1.shift === Car.prototype.shift);
+car1.shift("D");
+//car1.shift('d')报错
+console.log(car1.userGear);
+console.log(car1.shift === car2.shift);
+
+car1.shift = function (gear) {
+    this.userGear = gear.toUpperCase();
+}
+console.log(car1.shift === Car.prototype.shift);
+console.log(car1.shift === car2.shift);
+car1.shift('d');
+console.log(car1.userGear);
