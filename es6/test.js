@@ -188,7 +188,7 @@ Object.keys(o1)
     .filter(prop => prop.match(/^a/))
     .forEach(prop => console.log(`${prop}: ${o1[prop]}`));
 
-//面向对象编程
+// 面向对象编程
 // class Car {
 //     constructor(){
 //
@@ -213,7 +213,7 @@ Object.keys(o1)
 // const car1 = new Car("Tesla","Model S");
 // car1.shift('D');
 // console.log(car1.make,car1.model,car1.userGear);
-//动态属性
+// 动态属性
 // class Car {
 //     constructor(make,model){
 //         this.make = make;
@@ -230,7 +230,7 @@ Object.keys(o1)
 //     }
 //     shift(gear){this.userGear = gear;}
 // }/*并没有解决直接赋值问题*/
-//WeakMap强制属性私有化
+// WeakMap强制属性私有化
 const Car = (function () {
     const carProps = new WeakMap();
 
@@ -258,7 +258,8 @@ const Car = (function () {
     }
 
     return Car;
-})();/*这里使用即时调用函数将WeakMap隐藏再一个闭包内，从而阻止了外界的访问。这个WeakMap可以安全的存储任何不像被Car类外部访问的属性*/
+})();/*这里使用即时调用函数将WeakMap隐藏再一个闭包内，从而阻止了外界的访问。这个WeakMap可以安全的存储任何不
+像被Car类外部访问的属性*/
 
 //原型
 const car1 = new Car();
@@ -277,9 +278,9 @@ console.log(car1.shift === car2.shift);
 car1.shift('d');
 console.log(car1.userGear);
 
-/*到目前为止，讨论的方法都是实例方法。它们只针对每个具体的实例才有用。还有一种静态方法，它不与实例绑定。在静态方法中
-* ，this绑定的是类本身，但通常使用类名来代替this是公认的最佳实践。静态方法通常用来执行与类相关的任务，而非跟具体的实例
-* 相关。*/
+/*到目前为止，讨论的方法都是实例方法。它们只针对每个具体的实例才有用。还有一种静态方法，它不与实例绑定。在静态
+方法中，this绑定的是类本身，但通常使用类名来代替this是公认的最佳实践。静态方法通常用来执行与类相关的任务，而非
+跟具体的实例相关。*/
 
 //静态方法
 class Car1 {
@@ -315,12 +316,12 @@ console.log(Car1.areSimilar(car4, car5));
 console.log(Car1.areSame(car4, car5));
 console.log(Car1.areSame(car4, car4));
 //继承
-/*在分析原型的时候，已经看到了继承的身影：当创建一个类的实例时，它继承了类原型中的所有的功能。如果一个方法没有在对象原型
-* 中找到其定义，它会检查原型的原型。这样就建立了一个原型链。JavaScript会沿着原型链走下去，直到某个原型满足了需求。如果找
-* 不到这样的原型，程序最终会报错。原型链的最大好处就是能够建立类的层次结构。前面已经讨论了汽车如何归属与一种交通工具。原
-* 型链允许将功能置于最合适的继承层次上。例如，汽车可能有个方法deployAirbags，可以将它当作一般的交通工具方法，但是，大家
-* 做过配备安全气囊的船吗？另一方面，几乎左右的交通工具都可以搭载乘客，所以交通工具都可能有addPassenger的方法。下面实现这
-* 种场景*/
+/*在分析原型的时候，已经看到了继承的身影：当创建一个类的实例时，它继承了类原型中的所有的功能。如果一个方法没
+有在对象原型中找到其定义，它会检查原型的原型。这样就建立了一个原型链。JavaScript会沿着原型链走下去，直到某个
+原型满足了需求。如果找不到这样的原型，程序最终会报错。原型链的最大好处就是能够建立类的层次结构。前面已经讨论
+了汽车如何归属与一种交通工具。原型链允许将功能置于最合适的继承层次上。例如，汽车可能有个方法deployAirbags，
+可以将它当作一般的交通工具方法，但是，大家做过配备安全气囊的船吗？另一方面，几乎左右的交通工具都可以搭载乘客，
+所以交通工具都可能有addPassenger的方法。下面实现这种场景*/
 
 class Vehicle {
     constructor() {
@@ -343,6 +344,7 @@ class Car2 extends Vehicle {
         console.log("BWOOSH");
     }
 }
+Vehicle.prototype.sneaky = "not recommended!";
 const v = new Vehicle();
 v.addPassenger("Frank");
 v.addPassenger("Judy");
@@ -350,6 +352,75 @@ console.log(v.passengers);
 const c  = new Car2();
 c.addPassenger("Alice");
 c.addPassenger("Cameron");
+console.log("\n");
+for(let p in c){
+    console.log(`${p}: ${c[p]}`+
+        (c.hasOwnProperty(p) ? '' : '(inherited)'));
+}
+console.log("\n");
 console.log(c.passengers);
 //v.deployAirbags()报错
 c.deployAirbags();/*注意到可以在c上调用deployAirbags,但是不能在v上调用。*/
+
+//map
+const u1 = {name:'Cynthia'};
+const u2 = {name:'Jackson'};
+const u3 = {name:'James'};
+// const userRoles = new Map();
+// userRoles.set(u1,"User");
+// userRoles.set(u2,"User");
+// userRoles.set(u3,"Admin");
+//set()链式赋值
+//const userRoles = new Map();
+// userRoles
+//     .set(u1,"User")
+//     .set(u2,"User")
+//     .set(u3,"Admin");
+//map的构函数赋值
+const userRoles = new Map([
+    [u1,'User'],
+    [u2,'User'],
+    [u3,'Admin']
+]);
+/*如果key已经在map种，调用set()后key对应的value就会被替换
+* size属性返回map的元素个数
+* keys()方法可以拿到map中的所有键，values()可以拿到所有的值
+* entries()可以以数组的方式获取键值对，数组的第一个元素为键，第二个为值。所有的这些方法返回一个可
+* 以迭代的对象从而可以用for...of循环迭代*/
+for(let u of userRoles.keys())console.log(u.name);
+for(let u of userRoles.values())console.log(u);;
+for(let u of userRoles.entries())console.log(`${u[0].name}: ${u[1]}`);
+//通过解构让迭代更自然
+for(let [u,r] of userRoles.entries())console.log(`${u.name}: ${r}`);
+//如果需要一个数组，可以用展开运算符：
+console.log([...userRoles.values()]);
+//使用delete()方法可以删除map中的一个条目
+userRoles.delete(u2);
+console.log(userRoles.size)
+//如果想删除所有调用clear()方法
+userRoles.clear();
+console.log(userRoles.size);
+//Weak maps
+/*本质和Map相同除了以下几点
+* key必须时对象
+* WeakMap中的key可以被垃圾回收
+* WeakMap不能被迭代或者清空*/
+const SecretHolder = (function () {
+    const secrets = new WeakMap();
+    return class {
+        setSecret(secret){
+            secrets.set(this,secret);
+        }
+        getSecret(){
+            return secrets.get(this);
+        }
+    }
+})();
+/*这里把WeakMap放在IIFE中，同时还放入了一个使用它的类。在IIFE外，有一个叫做SectetHolder的类，这个类的实例可
+以存储secrets.secret的赋值和取值只能分别通过setSecret方法和getSecret方法完成*/
+const a = new SecretHolder();
+const b = new SecretHolder();
+a.setSecret("secret A");
+b.setSecret("secret B");
+console.log(a.getSecret() + b.getSecret());
+/*这里也可以使用普通的Map，但是这样回到是SecretHolder实例中的secret永远不会被垃圾回收*/
