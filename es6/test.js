@@ -424,3 +424,89 @@ a.setSecret("secret A");
 b.setSecret("secret B");
 console.log(a.getSecret() + b.getSecret());
 /*这里也可以使用普通的Map，但是这样回到是SecretHolder实例中的secret永远不会被垃圾回收*/
+
+//Error对象
+function validateEmail(email) {
+    return email.match(/@/)?
+        email:
+        new Error(`invalid email: ${email}`);
+}
+const email = "jane@doe.com";
+const validatedEmail = validateEmail(email);
+if(validatedEmail instanceof Error){
+    console.error(`Error: ${validatedEmail.message}`);
+}else{
+    console.log(`Valid email: ${validatedEmail}`);
+}/*可以通过typeof运算符判断返回的是不是Error实例然后通过Error的message属性来获取错误信
+息。虽然这样使用Error实例完全合法，也很有用，但实际上，它的大部分应用场景都在异常处理
+中，这也是接下来要学的内容*/
+
+//使用try...catch处理异常
+/*如果将前面的例子中的email设为null、数字、对象等任何非字符串值时都会出错，此时程序将
+* 会非常不友好的崩溃。为了防范这种非预期错误，可以将用于验证邮箱的代码封装在try..catch
+* 语句中*/
+const email_ = null;
+try{
+    const validatedEmail = validateEmail(email_);
+    if(validatedEmail instanceof Error){
+        console.error(`Error: ${validatedEmail.message}`);
+    }else{
+        console.log(`Valid email: ${validatedEmail}`);
+    }
+}catch (e) {
+    console.log(`Error: ${e.message}`);
+}/*捕获异常后，程序就不会再崩溃了，而是打印了错误日志后继续执行。不过可能还会有别的问题：
+如果这里需要输入一个合法的邮箱，而用户输入了无效的邮箱，那程序继续运行下去也没有意义了。
+注意，一旦有错误产生，执行逻辑立即跳到catch中。所以validateEmail调用语句后的if语句就不
+会执行。也可以再try块中写入任何期望的语句，最先产生错误的语句会使执行逻辑跳转到catch块
+中。如果try块中的语句没有任何错误，catch块中的代码就不会被执行，程序会继续运行下去。*/
+
+//抛出异常
+/*function  billPay(amount,payee,account) {
+    if(amount > account.balance)
+        throw new Error("insufficient funds");
+    account.transfer(payee,amount);
+}*/
+
+//异常处理和调用栈
+function a_() {
+    console.log('a: calling b');
+    b_();
+    console.log('a: done');
+}
+function b_() {
+    console.log("b: calling c");
+    c_();
+    console.log("b: done");
+}
+function c_() {
+    console.log("c: throwing error");
+    throw new Error('c error');
+    console.log('c: done');
+}
+function d_() {
+    console.log('d: calling c');
+    c_();
+    console.log('d: done');
+}
+try{
+    a_();
+}catch (e) {
+    console.log(e.stack);
+}
+try{
+    d_();
+}catch (e) {
+    console.log(e.stack);
+}/*栈轨迹从最深层的函数开始，直到没有函数调用。所以出现异常应该从最上面开始解决*/
+//try...catch...finally
+try{
+    console.log("this line is executed...");
+    throw new Error("whoops");
+    console.log("whis line is not...");
+}catch (e) {
+    console.log("there was an error..");
+}finally {
+    console.log("...always executed");
+    console.log("perform cleanup here");
+}
