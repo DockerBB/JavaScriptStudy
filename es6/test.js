@@ -262,8 +262,41 @@ console.log(car1.shift === car2.shift);
 
 car1.shift = function (gear) {
     this.userGear = gear.toUpperCase();
-}
+};
 console.log(car1.shift === Car.prototype.shift);
 console.log(car1.shift === car2.shift);
 car1.shift('d');
 console.log(car1.userGear);
+
+/*到目前为止，讨论的方法都是实例方法。它们只针对每个具体的实例才有用。还有一种静态方法，它不与实例绑定。在静态方法中
+* ，this绑定的是类本身，但通常使用类名来代替this是公认的最佳实践。静态方法通常用来执行与类相关的任务，而非跟具体的实例
+* 相关。*/
+//静态方法
+class Car1{
+    static getNextVin(){
+        return Car1.nextVin++;
+    }
+    constructor(make,model){
+        this.make = make;
+        this.model = model;
+        this.vin = Car1.getNextVin();
+    }
+    static areSimilar(car1, car2){
+        return car1.make === car2.make && car1.model === car2.model;
+    }
+    static areSame (car1, car2){
+        return car1.vin === car2.vin;
+    }
+}
+Car1.nextVin = 0;
+
+const car3 = new Car1("Tesla","S");
+const car4 = new Car1("Mazda","3");
+const car5 = new Car1("Mazda","3");
+console.log(car3.vin);
+console.log(car4.vin);
+console.log(car5.vin);
+console.log(Car1.areSimilar(car3,car4));
+console.log(Car1.areSimilar(car4,car5));
+console.log(Car1.areSame(car4,car5));
+console.log(Car1.areSame(car4,car4));
