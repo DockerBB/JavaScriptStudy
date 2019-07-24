@@ -510,3 +510,92 @@ try{
     console.log("...always executed");
     console.log("perform cleanup here");
 }
+
+//迭代器和生成器
+const book = [
+    "Twinkle, twinkle, little bat!",
+    "How I wonder what you're at!",
+    "Up above the world you fly,",
+    "Like a tea tray in the sky.",
+    "Twinkle, twinkle, little bat!",
+    "How I wonder what you're at!"
+];
+console.log("\n");
+const it = book.values();//values（）方法获取迭代器
+for(let i=it.next();!i.done;i=it.next()){
+    console.log(i.value);
+}
+//迭代协议
+/*迭代器协议可以让任何对象变得可迭代
+* 如果一个类提供了一个符号方法Symbol.iterator，这个方法返回一个具有迭代行为
+* 的对象（比如：对象有next()方法，同时next方法返回一个包含value和done的对象
+* ），那么这个类就是可迭代的*/
+class Log{
+   constructor(){
+       this.messages = [];
+   }
+   add(message){
+       this.messages.push({message,timestamp: Date.now()});
+   }
+   [Symbol.iterator](){
+       return this.messages.values();
+   }
+}
+const log = new Log();
+log.add("first day at sea");
+log.add("spotted whale");
+log.add("spotted another vessel");
+for(let i of log){
+    console.log(`${i.message} @ ${i.timestamp}`);
+}
+//可以编写自己的迭代器
+class Log2{
+    constructor(){
+        this.messages = [];
+    }
+    add(message){
+        this.messages.push({message,timestamp: Date.now()});
+    }
+    [Symbol.iterator](){
+        const messages = this.messages;
+        let i =0;
+        return {
+            next(){
+                if(i>=messages.length)
+                    return {value: undefined, done: true};
+                else
+                    return {value: messages[i++],done: false};
+            }
+        }
+    }
+}
+console.log("\n");
+const log2 = new Log2();
+log2.add("first day at sea");
+log2.add("spotted whale");
+log2.add("spotted another vessel");
+for(let i of log2){
+    console.log(`${i.message} @ ${i.timestamp}`);
+}
+/*至此，以上使用的例子都是迭代预先定义好元素个数的数组：一本书的页数，或者log中
+* 的日期消息记录。迭代器还可以用来表示含有无穷值的对象。*/
+class FibonacciSequence {
+    [Symbol.iterator](){
+        let a = 0, b = 1;
+        return {
+            next(){
+                let temp = b;
+                b+=a;
+                a=temp;
+                return {value: temp,done: false};
+            }
+        };
+    }
+}
+const fib = new FibonacciSequence();
+let i = 0;
+for(let n of fib){
+    console.log(n);
+    if(++i>9)break;
+}
+//生成器(先鸽了以后补上)
