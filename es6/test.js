@@ -344,17 +344,18 @@ class Car2 extends Vehicle {
         console.log("BWOOSH");
     }
 }
+
 Vehicle.prototype.sneaky = "not recommended!";
 const v = new Vehicle();
 v.addPassenger("Frank");
 v.addPassenger("Judy");
 console.log(v.passengers);
-const c  = new Car2();
+const c = new Car2();
 c.addPassenger("Alice");
 c.addPassenger("Cameron");
 console.log("\n");
-for(let p in c){
-    console.log(`${p}: ${c[p]}`+
+for (let p in c) {
+    console.log(`${p}: ${c[p]}` +
         (c.hasOwnProperty(p) ? '' : '(inherited)'));
 }
 console.log("\n");
@@ -363,9 +364,9 @@ console.log(c.passengers);
 c.deployAirbags();/*注意到可以在c上调用deployAirbags,但是不能在v上调用。*/
 
 //map
-const u1 = {name:'Cynthia'};
-const u2 = {name:'Jackson'};
-const u3 = {name:'James'};
+const u1 = {name: 'Cynthia'};
+const u2 = {name: 'Jackson'};
+const u3 = {name: 'James'};
 // const userRoles = new Map();
 // userRoles.set(u1,"User");
 // userRoles.set(u2,"User");
@@ -378,20 +379,21 @@ const u3 = {name:'James'};
 //     .set(u3,"Admin");
 //map的构函数赋值
 const userRoles = new Map([
-    [u1,'User'],
-    [u2,'User'],
-    [u3,'Admin']
+    [u1, 'User'],
+    [u2, 'User'],
+    [u3, 'Admin']
 ]);
 /*如果key已经在map种，调用set()后key对应的value就会被替换
 * size属性返回map的元素个数
 * keys()方法可以拿到map中的所有键，values()可以拿到所有的值
 * entries()可以以数组的方式获取键值对，数组的第一个元素为键，第二个为值。所有的这些方法返回一个可
 * 以迭代的对象从而可以用for...of循环迭代*/
-for(let u of userRoles.keys())console.log(u.name);
-for(let u of userRoles.values())console.log(u);;
-for(let u of userRoles.entries())console.log(`${u[0].name}: ${u[1]}`);
+for (let u of userRoles.keys()) console.log(u.name);
+for (let u of userRoles.values()) console.log(u);
+;
+for (let u of userRoles.entries()) console.log(`${u[0].name}: ${u[1]}`);
 //通过解构让迭代更自然
-for(let [u,r] of userRoles.entries())console.log(`${u.name}: ${r}`);
+for (let [u, r] of userRoles.entries()) console.log(`${u.name}: ${r}`);
 //如果需要一个数组，可以用展开运算符：
 console.log([...userRoles.values()]);
 //使用delete()方法可以删除map中的一个条目
@@ -408,10 +410,11 @@ console.log(userRoles.size);
 const SecretHolder = (function () {
     const secrets = new WeakMap();
     return class {
-        setSecret(secret){
-            secrets.set(this,secret);
+        setSecret(secret) {
+            secrets.set(this, secret);
         }
-        getSecret(){
+
+        getSecret() {
             return secrets.get(this);
         }
     }
@@ -427,15 +430,16 @@ console.log(a.getSecret() + b.getSecret());
 
 //Error对象
 function validateEmail(email) {
-    return email.match(/@/)?
-        email:
+    return email.match(/@/) ?
+        email :
         new Error(`invalid email: ${email}`);
 }
+
 const email = "jane@doe.com";
 const validatedEmail = validateEmail(email);
-if(validatedEmail instanceof Error){
+if (validatedEmail instanceof Error) {
     console.error(`Error: ${validatedEmail.message}`);
-}else{
+} else {
     console.log(`Valid email: ${validatedEmail}`);
 }/*可以通过typeof运算符判断返回的是不是Error实例然后通过Error的message属性来获取错误信
 息。虽然这样使用Error实例完全合法，也很有用，但实际上，它的大部分应用场景都在异常处理
@@ -446,14 +450,14 @@ if(validatedEmail instanceof Error){
 * 会非常不友好的崩溃。为了防范这种非预期错误，可以将用于验证邮箱的代码封装在try..catch
 * 语句中*/
 const email_ = null;
-try{
+try {
     const validatedEmail = validateEmail(email_);
-    if(validatedEmail instanceof Error){
+    if (validatedEmail instanceof Error) {
         console.error(`Error: ${validatedEmail.message}`);
-    }else{
+    } else {
         console.log(`Valid email: ${validatedEmail}`);
     }
-}catch (e) {
+} catch (e) {
     console.log(`Error: ${e.message}`);
 }/*捕获异常后，程序就不会再崩溃了，而是打印了错误日志后继续执行。不过可能还会有别的问题：
 如果这里需要输入一个合法的邮箱，而用户输入了无效的邮箱，那程序继续运行下去也没有意义了。
@@ -474,39 +478,43 @@ function a_() {
     b_();
     console.log('a: done');
 }
+
 function b_() {
     console.log("b: calling c");
     c_();
     console.log("b: done");
 }
+
 function c_() {
     console.log("c: throwing error");
     throw new Error('c error');
     console.log('c: done');
 }
+
 function d_() {
     console.log('d: calling c');
     c_();
     console.log('d: done');
 }
-try{
+
+try {
     a_();
-}catch (e) {
+} catch (e) {
     console.log(e.stack);
 }
-try{
+try {
     d_();
-}catch (e) {
+} catch (e) {
     console.log(e.stack);
 }/*栈轨迹从最深层的函数开始，直到没有函数调用。所以出现异常应该从最上面开始解决*/
 //try...catch...finally
-try{
+try {
     console.log("this line is executed...");
     throw new Error("whoops");
     console.log("whis line is not...");
-}catch (e) {
+} catch (e) {
     console.log("there was an error..");
-}finally {
+} finally {
     console.log("...always executed");
     console.log("perform cleanup here");
 }
@@ -522,7 +530,7 @@ const book = [
 ];
 console.log("\n");
 const it = book.values();//values（）方法获取迭代器
-for(let i=it.next();!i.done;i=it.next()){
+for (let i = it.next(); !i.done; i = it.next()) {
     console.log(i.value);
 }
 //迭代协议
@@ -530,72 +538,176 @@ for(let i=it.next();!i.done;i=it.next()){
 * 如果一个类提供了一个符号方法Symbol.iterator，这个方法返回一个具有迭代行为
 * 的对象（比如：对象有next()方法，同时next方法返回一个包含value和done的对象
 * ），那么这个类就是可迭代的*/
-class Log{
-   constructor(){
-       this.messages = [];
-   }
-   add(message){
-       this.messages.push({message,timestamp: Date.now()});
-   }
-   [Symbol.iterator](){
-       return this.messages.values();
-   }
+class Log {
+    constructor() {
+        this.messages = [];
+    }
+
+    add(message) {
+        this.messages.push({message, timestamp: Date.now()});
+    }
+
+    [Symbol.iterator]() {
+        return this.messages.values();
+    }
 }
+
 const log = new Log();
 log.add("first day at sea");
 log.add("spotted whale");
 log.add("spotted another vessel");
-for(let i of log){
+for (let i of log) {
     console.log(`${i.message} @ ${i.timestamp}`);
 }
+
 //可以编写自己的迭代器
-class Log2{
-    constructor(){
+class Log2 {
+    constructor() {
         this.messages = [];
     }
-    add(message){
-        this.messages.push({message,timestamp: Date.now()});
+
+    add(message) {
+        this.messages.push({message, timestamp: Date.now()});
     }
-    [Symbol.iterator](){
+
+    [Symbol.iterator]() {
         const messages = this.messages;
-        let i =0;
+        let i = 0;
         return {
-            next(){
-                if(i>=messages.length)
+            next() {
+                if (i >= messages.length)
                     return {value: undefined, done: true};
                 else
-                    return {value: messages[i++],done: false};
+                    return {value: messages[i++], done: false};
             }
         }
     }
 }
+
 console.log("\n");
 const log2 = new Log2();
 log2.add("first day at sea");
 log2.add("spotted whale");
 log2.add("spotted another vessel");
-for(let i of log2){
+for (let i of log2) {
     console.log(`${i.message} @ ${i.timestamp}`);
 }
+
 /*至此，以上使用的例子都是迭代预先定义好元素个数的数组：一本书的页数，或者log中
 * 的日期消息记录。迭代器还可以用来表示含有无穷值的对象。*/
 class FibonacciSequence {
-    [Symbol.iterator](){
+    [Symbol.iterator]() {
         let a = 0, b = 1;
         return {
-            next(){
+            next() {
                 let temp = b;
-                b+=a;
-                a=temp;
-                return {value: temp,done: false};
+                b += a;
+                a = temp;
+                return {value: temp, done: false};
             }
         };
     }
 }
+
 const fib = new FibonacciSequence();
 let i = 0;
-for(let n of fib){
+for (let n of fib) {
     console.log(n);
-    if(++i>9)break;
+    if (++i > 9) break;
 }
 //生成器(先鸽了以后补上)
+
+//IIEFs和异步代码
+/*setTimeout函数会根据第二个参数设置的时间延迟执行第一个参数（一个函数）*/
+// setTimeout(function () {
+//     console.log("hello");
+// },1500);
+//有了这些知识储备，可以编写倒计时代码
+var j;
+// for(j=5;j>=0;j--){
+//     setTimeout(function () {
+//         console.log(j===0? "go!":j);
+//     },(5-j)*1000);
+// }
+/*运行结果是6个-1 异步编程。。还没理解这里的setTimeout函数再循环中没有被调用他
+们会在未来的某个时间点被调用。所以循环会正常运行，从5开始，到-1结束..而这发生
+在函数被调用之前。所以，当函数被调用是j的值是-1。*/
+/*for (j = 5; j >= 0; j--) {
+    (function (j) {
+        setTimeout(function () {
+            console.log(j === 0 ? "go!" : j);
+        }, (5 - j) * 1000);
+    })(j);//IIFE + 匿名函数 + 闭包解决问题
+}*/
+// for(let j=5;j>=0;j--){
+//     setTimeout(function () {
+//         console.log(j===0? "go!":j);
+//     },(5-j)*1000);
+// }/*for循环使用let关键字也可以解决作用域的问题*/
+
+/*函数变量：函数被调用之前和其他变量一样是静态的，被调用的时候是动态的
+* 凡是能够使用变量的地方，都可以使用函数，意味着除了变量的普通用法外，
+* 还可以做这些事
+* · 通过创建一个指向函数的变量来给函数起一个别名
+* · 将函数放入数组中（可能混合其他类型的数据）
+* · 将函数当作对象的属性
+* · 将函数传入到另一个函数中
+* · 从一个函数中返回一个函数
+* · 从一个把函数当作参数的函数中返回一个函数*/
+//别名
+function addThreeSquareAddFiveTakeSquareRoot(x) {
+    return Math.sqrt(Math.pow(x+3,2)+5);
+}
+const f3 = addThreeSquareAddFiveTakeSquareRoot;
+const answer = (f3(5)+f3(2))/f3(7);
+console.log(answer);
+//数组中的函数
+const cos = Math.cos;
+const sin = Math.sin;
+const theta = Math.PI/4;
+const zoom = 2;
+const offset = [1,-3];
+
+const pipeline = [
+    function rotate(p){
+        return {
+            x: p.x * cos(theta) - p.y * sin(theta),
+            y: p.x * sin(theta) + p.y * cos(theta)
+        };
+    },
+    function scale(p) {
+        return {x: p.x * zoom, y: p.y * zoom};
+    },
+    function translate(p) {
+        return {x: p.x + offset[0],y: p.y + offset[1]};
+    }
+];
+const p = {x: 1,y: 1};
+let p2 = p;
+for(let i=0;i<pipeline.length;i++){
+    p2 = pipeline[i](p2);
+    console.log(p2);
+}
+//将函数传给函数
+/*之前已经接触了很多将函数传给函数的例子。比如把函数传给setTimeout或forEach。这样做
+* 的另一个原因是为了管理异步编程。实现异步执行的常见方法是将一个函数(通常叫回调函数)
+* 传给另一个函数。该函数在闭包函数执行完成时被调用*/
+function sum(arr,f) {
+    if(typeof f != 'function')f = x => x;
+    return arr.reduce((a,x) => a+=f(x),0);
+}
+console.log("\n" + sum([1,2,3]));
+console.log(sum([1,2,3],x => x*x));
+console.log(sum([1,2,3],x => Math.pow(x,3)));
+//在函数中返回函数(有点难理解)
+// function sumOfSquares(arr) {
+//     return sum(arr,x => x*x);
+// }
+function newSummer(f) {
+    return arr => sum(arr,f);
+}
+const sumOfSquares = newSummer(x => x*x);
+const sumOfCubes = newSummer(x => Math.pow(x,3));
+console.log("\n"+sumOfSquares([1,2,3]));
+console.log(sumOfCubes([1,2,3]));
+
