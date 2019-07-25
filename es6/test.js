@@ -711,3 +711,138 @@ const sumOfCubes = newSummer(x => Math.pow(x,3));
 console.log("\n"+sumOfSquares([1,2,3]));
 console.log(sumOfCubes([1,2,3]));
 
+//14章 异步编程
+/*JavaScript对异步编程的支持有三个不同的阶段：
+回调(callback)阶段
+* promise阶段
+* 生成器(generator)阶段*/
+/*如果知识简单的说生成器比任何出现在它之前的阶段都好，那么只要了解生成
+* 器的工作原理跳过其他的就行了，但实际上没这么简单。生成器本身并不提供
+* 任何对异步的支持：他们依赖于承诺或特定类型的回调来提供异步行为。同样
+* 像承诺这样有用的东西，会依赖于回调（而回调本身又由于具有对象而变得更
+* 有用）。除了用户输入外，异步编程技术的三个主要使用场景是：
+* 网络请求（如Ajax请求）
+* 文件系统操作（读/写文件等）
+* 刻意的时间延迟功能（比如警告等）*/
+/*类比：在一个人满为患且没有预定的餐厅里找一个空桌子。此时不需要排队等
+* ，当有位子的时候餐厅会给打电话。这就类似回调：给餐厅的工作人员提供了
+* 一些信息，允许他们在有位子的时候通知客户。所以餐厅可以做自己的事，客
+* 户也可以做自己的事，没有人在等其他人。另一家餐厅也许会给客户一个传呼
+* 机，在位子准备好的时候就会响。这更像是一个承诺：餐厅工作人员会给客户
+* 一个承诺，承诺在有空桌子的时候通知客户。*/
+//回调
+/*console.log("Before timeout: " + new Date());
+setTimeout(function () {
+    console.log("After timeout: " + new Date());
+},2000);
+console.log("I happen after setTimeout");
+console.log("Me too");*/
+/*可以看到代码编写的顺序与实际执行的顺序之间没有必然联系。这里就是回调异步*/
+
+//setInterval函数每隔一段特定的时间运行回调函数，并且一直运行下去，直到调用
+//clearInterval函数
+/*const start = new Date();
+let i_1 =0;
+const intervalId = setInterval(function () {
+    let now = new Date();
+    ++i_1;
+    if(now.getMinutes() !== start.getMinutes() || i_1>10)
+        return clearInterval(intervalId);
+    console.log(`${i_1}: ${now}`);
+},2000);*/
+/*setInterval返回了一个ID,在后面可以用来取消这次调用。与之对应的clearInterval
+* 在timeout之前停止本次调用也是使用了这种方式
+* setTimeout、setInterval、clearInterval都定义在全局对象中（浏览器中是window,
+* Node中是global）*/
+
+//scope和异步执行
+/*异步执行中容易让人疑惑或犯错的一点是：scope和闭包是如何影响异步执行的。每当
+* 一个函数被执行时，都创建了一个闭包：所有在函数内部创建的变量(包括形参)只在
+* 有被访问的是时候才存在*/
+// function contdown() {
+//     console.log("Countdown:");
+//     for(let i=5;i>=0;i--){
+//         setTimeout(function () {
+//             console.log(i===0?"Go!":i);
+//         },(5-i)*1000);
+//     }
+// }
+// contdown();
+//promise
+/*创建一个带有函数的promise实例，它应该包含一个resolve(满足)和reject的回调。*/
+function countdown_(seconds) {
+    return new Promise(function (resolve,reject) {
+        for(let i=seconds;i>=0;i--){
+            setTimeout(function () {
+                if(i===13)return reject(new Error("DEFINITELY NOT COUNTING THAT"));
+                if(i>0)console.log(i+'...');
+                else resolve(console.log("Go"));
+            },(seconds-i)*1000);
+        }
+    })
+}
+// countdown_(5);
+//使用promise
+// countdown_(14).then(
+//     function () {
+//         console.log("countdown completed successfully");
+//     },
+//     function (err) {
+//         console.log("countdown experienced an error: "+err.message);
+//     }
+// );
+/*从小于13的任何数字开始倒数都不会出错，从13或大于13的数字开始，则会在数到13的时候
+* 会出错，但是控制台会一直打印log。调用reject并没能终止函数，他们只是修改了promise
+* 的状态。显然countdown函数需要优化。通常，并不希望一个函数在被处理后还能继续运行
+* (不管成功还是失败)，单数countdown却继续运行。控制台的log一点都不灵活，他们并不会
+* 真的提供想要的控制权。
+* promise提供了一个定义及其良好，并且可以安全地处理那些满足或者拒绝的异步任务的方式
+* ，但是它却没有报告过程进度的能力。也就是说，promise只可能是满足或者拒绝，绝不会出
+* 现“%50完成”。有的promise库中增加了一些很有用的功能，比如，可以报告过程,很可能
+* JavaScript中的promise也会具备那些功能，不过现在，我们只能在没有这些功能的情况下
+* 工作。如果想要这些功能，需要继续学习下面的内容*/
+//事件
+/*事件发射器可以广播事件，任意愿意监听这些事件的人都可以去做这件事。如何监听事件呢？
+* 答案是回调。创建自己的事件系统其实很简单，即便如此，Node还是为我们提供了内建的支持
+* 。如果使用浏览器，jQuery同样提供了一个事件机制（http://api.jquery.com/category/events）
+* 。为了改进countdown，我们通常会Node的EvenEmitter。虽然也可以在像countdown这样的
+* 函数中使用EventEmitter,不过实际上他的设计初衷时跟类一起使用。所以可以把countdown
+* 函数放在Countdown类中。*/
+const EventEmitter = require('events').EventEmitter;
+class Countdown extends EventEmitter{
+    constructor (seconds,superstitious){
+        super();
+        this.seconds = seconds;
+        this.superstitious = superstitious;
+    }
+    go(){
+        const countdown = this;
+        return new Promise(function (resolve,reject) {
+            for(let i=countdown.seconds;i>=0;i--){
+                setTimeout(function () {
+                    if(countdown.superstitious && i===13){
+                        return reject(new Error("DEFINITELY NOT COUNTING THAT"));
+                    }
+                    countdown.emit('tick',i);
+                    if(i===0)resolve();
+                },(countdown.seconds-i)*1000);
+            }
+        });
+    }
+}
+/*Countdown类继承了EventEmitter,这样Countdown就可以发射事件。Go方法是正式开始倒计时
+* 并返回promise的地方。注意在go函数中，我们做的第一件事就是把this赋给countdown。这
+* 是应为在回调中，不论倒计时是否迷信数字，都需要this的值来获取倒计时的长度。要记住
+* this是一个特殊变量，它与回调中的this不是同一个东西。所以我们需要保存当前的this值，
+* 从而在promise中使用它。任何想要监听tick事件（可以任意命名）的人都可以监听它。接下
+* 来看看如何使用这经过改进后的全新countdown。*/
+const c_1 = new Countdown(13);
+c_1.on('tick',function (i) {
+    if(i>0)console.log(i+'...');
+});
+c_1.go().then(function () {
+    console.log("Go");
+})
+.catch(function (err) {
+    console.log(err.message);
+})
